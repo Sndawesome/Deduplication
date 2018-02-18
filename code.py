@@ -25,8 +25,8 @@ train['ln_1_1']=list(map(f,train['ln_1']))
 train.drop(['ln','fn'],axis=1,inplace=True)
 
 #Remove duplicates based on first name,last name,dob,gn
-x=train.drop_duplicates(['dob','gn','ln_1','ln_2_1',0,1,0.1])
-x=x.drop_duplicates(['dob','gn','ln_1','ln_2_1',0,1.1])
+x=train.drop_duplicates(['dob','gn','ln_1','ln_2',0,1])
+#x=x.drop_duplicates(['dob','gn','ln_1','ln_2_1',0,1,1.1])
 x.groupby(['dob','gn','ln_1',0]).count()
 
 #Remove Duplicates based on name and last name suffix
@@ -34,6 +34,10 @@ z=x[x[['dob','gn','ln_1',0]].duplicated(keep=False)]
 z['ln_2'].fillna(1,inplace=True)
 z[1].fillna(0,inplace=True)
 x.drop(list(z[(z[1]==0) & (z.ln_2==1)].index),inplace=True)
+n=z[z[['dob','gn','ln_1','ln_2',0,1.1]].duplicated(keep=False)]
+x.drop(list(n[n[1].apply(lambda x:len(x)==1)].index),inplace=True)
+m=z[z[['dob','gn','ln_1',0,'ln_2_1',1]].duplicated(keep=False)]
+x.drop(list(m[m.ln_2.apply(lambda x:len(x)==1)].index),inplace=True)
 
 
 #REMOVE DUPLICATES BASED ON INITIALS OF FN AND LN
